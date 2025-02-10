@@ -2,6 +2,12 @@ data "digitalocean_ssh_key" "DO_public_key_name" {
   name = var.DO_public_key_name # using fred
 }
 
+# # can create ssh-keygen -t ed25519 -f /opt/tmp/workshop01_ed25519
+# resource "digitalocean_ssh_key" "workshop01_pub" {
+#   name = "workshop01_pub"
+#   public_key = file("/opt/tmp/workshop01_ed25519.pub") # can store as filepath to pubkey var
+# }
+
 ########## Resources ##########
 
 # nginx server
@@ -44,9 +50,19 @@ resource "digitalocean_droplet" "nginx" {
     }
 }
 
+# # this doesn't work, will be done only after nginx server has been created, else there'll be cyclic
+# resource "local_file" "index_html" {
+#   filename = "assets/index.html"
+#   file_permission = "0644"
+#   content = templatefile("assets/index.html.tftpl", {
+#     droplet_ip = digitalocean_droplet.nginx.ipv4_address
+#   })
+# }
+
 resource "local_file" "file" {
     filename = "nginx-${digitalocean_droplet.nginx.ipv4_address}.nip.io"
     content = ""
+    file_permission = "0444"
 }
 
 output "nginx_ipv4" {
