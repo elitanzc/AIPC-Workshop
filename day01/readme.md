@@ -30,3 +30,40 @@ output "droplet-day01-ipv4" {
     value = digitalocean_droplet.droplet-day01[0].ipv4_address
 }
 ```
+
+Can only create top-level resources.
+
+## for_each
+Used in 2 ways:
+1. replicate/ create multiple at resource level
+2. dynamically create attribute blocks within a resource, e.g.:
+    ```
+    variable attributes {
+        type = map(
+            object({
+                xxx = string
+                yyy = string
+            })
+        )
+        default = {
+            attribute1 = {
+                xxx = ""
+                yyy = ""
+            }
+            attribute2 = {
+                xxx = ""
+                yyy = ""
+            }
+        }
+    }
+    resource ... {
+        dynamic "attribute_name" {
+            for_each = var.attributes
+            iterator = iterator_name # changes iterator from each (default) to iterator_name
+            content = {
+                xxx = iterator_name.value.xxx
+                yyy = iterator_name.value.yyy
+            }
+        }
+    }
+    ```
