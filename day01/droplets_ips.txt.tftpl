@@ -1,0 +1,5 @@
+List of droplet IPs
+${message}
+%{ for ip in droplet_ips }
+- ${ip}
+%{ endfor }

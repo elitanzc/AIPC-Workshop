@@ -8,7 +8,13 @@ variable "DO_token" {
 variable "DO_public_key_name" {
     type = string
     description = "Name of the ssh public key registered in DigitalOcean"
-    default = "work1"
+    default = "fred" #"work1"
+}
+
+variable "private_key_filepath" {
+    type = string
+    default = "/home/fred/.ssh/id_ed25519_nopw"
+    sensitive = true
 }
 
 
