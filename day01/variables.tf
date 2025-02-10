@@ -30,3 +30,22 @@ variable "instance_count" {
   type = number # can also be boolean/ object
   default = 2
 }
+
+variable "servers" {
+  type = map(
+    object({
+        size  = string
+        image = string
+    })
+  )
+  default = {
+    myserver-512mb = {
+      size  = "s-1vcpu-512mb-10gb"
+      image = "ubuntu-22-04-x64"
+    }
+    myserver-1gb = {
+      size  = "s-1vcpu-1gb"
+      image = "ubuntu-24-10-x64"
+    }
+  }
+}
