@@ -1,0 +1,22 @@
+###########################################################################################
+# The file inventory.yaml will be generated terraform local_file resource from workshop01 #
+###########################################################################################
+all:
+  vars:
+    ansible_user: root
+    ansible_connection: ssh
+    ansible_ssh_private_key_file: ${private_key_filepath}
+  hosts:
+    mydroplet:
+      # pkgs_to_install: used in playbook_nginx.yaml
+      pkgs_to_install: # a list
+        - name: nginx
+          to_install: present
+        - name: zip
+          to_install: present
+      ansible_host: ${droplet_ip} # using nginx server from workshop01
+  # group the hosts
+  children:
+    nginx:
+      hosts:
+        mydroplet:

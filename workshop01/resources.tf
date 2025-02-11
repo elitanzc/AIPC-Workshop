@@ -65,6 +65,16 @@ resource "local_file" "file" {
     file_permission = "0444"
 }
 
+# used in day02's ansible example
+resource "local_file" "inventories_yaml" {
+    filename = "../day02/inventory.yaml"
+    content = templatefile("../day02/inventory.yaml.tftpl", {
+      private_key_filepath = var.private_key_filepath
+      droplet_ip = digitalocean_droplet.nginx.ipv4_address
+    })
+    file_permission = "0444"
+}
+
 output "nginx_ipv4" {
   value = digitalocean_droplet.nginx.ipv4_address
 }

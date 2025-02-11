@@ -1,0 +1,7 @@
+##### used in playbook_2_fileexists.yaml #####
+
+IP address: 146.190.109.101
+    Name: nginx
+    Status: present
+    Name: zip
+    Status: present

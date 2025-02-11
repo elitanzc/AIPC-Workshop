@@ -1,0 +1,35 @@
+- name: Setup my server
+  hosts: all
+  vars:
+    assets_url: https://drive.google.com/file/d/12IsLzXXGrYc3N8N9GkmrIt3w8TPK2e9m
+    assets_local_file: assets.zip
+    install_these: # a dict, not list
+      nginx: present
+      zip: present
+  tasks:
+    - name: Install Nginx
+      apt:
+        update_cache: yes
+        #### Standard way
+        # name: nginx 
+        # state: present
+        #### Ref loop: "{{ pkgs_to_install }}"
+        # name: "{{ item.name }}" # refers to each item in loop
+        # state: "{{ item.to_install }}"
+        ### Ref loop: "{{ install_these | dict2items }}"
+        name: "{{ item.key }}"
+        state: "{{ item.value }}"
+      loop: "{{ install_these | dict2items }}" # "{{ pkgs_to_install }}" # var in inventory.yaml
+    - name: Add HTML content to /var/www/html
+      # get_url:
+      #   url: "{{ assets_url }}" # good practice to put vars in quotes
+      #   dest: /var/www/html
+      unarchive:
+        src: "{{ assets_local_file }}"
+        dest: /var/www/html
+    - name: Start Nginx
+      systemd:
+        name: nginx
+        daemon_reload: true
+        enabled: true
+        state: started

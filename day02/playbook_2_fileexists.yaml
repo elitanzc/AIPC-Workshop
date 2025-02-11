@@ -1,0 +1,32 @@
+- name: Setup my server
+  hosts: all
+  tasks:
+    - name: Check if file exists
+      stat:
+        path: /tmp/assets.zip
+      register: f
+    - name: Display output of the stat module
+      debug:
+        msg: "File exists? {{ f.stat.exists }}" # reading the json f
+    - name: Upload file
+      # copying files all the time can be time and resource consuming,
+      # better to check if file exists before copying
+      # solution: use stat module above
+      copy:
+        src: assets.zip
+        dest: /tmp
+      when: not f.stat.exists # run this task only when f.stat.exists evals to false, else skipped
+    #   register: f # using back same variable f to store output of this task
+    # - name: Display output of the copy module
+    #   debug:
+    #     msg: "File exists? {{ f }}"
+    - name: Generate report for list of installed packages
+      template:
+        src: packages_installed.txt.j2 # the template which gets pkgs_to_install var from global vars inventory.yaml
+        dest: packages_installed.txt # write to file in server
+    # Example to execute locally
+    - name: Generate report in LOCAL
+      template:
+        src: packages_installed.txt.j2
+        dest: packages_installed.txt
+      delegate_to: localhost

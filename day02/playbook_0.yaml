@@ -1,0 +1,12 @@
+- name: Connectivity Test
+  hosts: nginx # all # mydroplet
+  tasks:
+    - name: Ping the host
+      ping:
+    - name: Echo a message
+      debug: 
+        # any variables can be accessed in {{ }}
+        msg: "User running this is task {{ ansible_user }} , IP address is {{ ansible_host }}"
+    - name: Time and date on the server
+      shell:
+        cmd: echo "The current time/ date is $(date)"

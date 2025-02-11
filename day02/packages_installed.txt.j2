@@ -1,0 +1,7 @@
+##### used in playbook_2_fileexists.yaml #####
+
+IP address: {{ ansible_host }}
+{% for p in pkgs_to_install %}
+    Name: {{ p.name }}
+    Status: {{ p.to_install }}
+{% endfor %}
