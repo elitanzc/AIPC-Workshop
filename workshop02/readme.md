@@ -13,4 +13,7 @@
     ```
     ansible-playbook playbook.yaml -i inventory.yaml
     ```
-3. Site can be accessed at code-<ansible_host>.nip.io, where ansible_host is the ip of the server created in step 1
+3. Site can be accessed at code-<ansible_host_ip>.nip.io, where ansible_host_ip is the ip of the server created in step 1. Can also ssh into the ansible host by running
+    ```
+    ssh -i <path_to_private_key> root@*
+    ```
