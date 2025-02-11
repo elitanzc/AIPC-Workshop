@@ -18,6 +18,12 @@ variable "DO_public_key_name" {
     default = "fred"
 }
 
+variable "code_server_password" {
+    type = string
+    description = "Password for code server"
+    sensitive = true
+}
+
 
 ########## Digital Ocean Droplet variables ##########
 # see https://slugs.do-api.dev/ for for values

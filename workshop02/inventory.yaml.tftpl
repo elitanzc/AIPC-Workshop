@@ -9,13 +9,14 @@ all:
   hosts:
     workshop02-server:
       ansible_host: ${droplet_ip}
-      symlinks_to_create:
-        /usr/local/opt/code-server: /usr/lib/code-server
-        /usr/local/opt/code-server/bin/code-server: /usr/bin/code-server
+      opt_dir: /usr/local/opt/
       dirs_to_create:
-        - /usr/local/opt
+        - "{{ opt_dir }}"
         - /var/lib/code-server
+      # symlinks_to_create:
+      #   /usr/local/opt/code-server: /usr/lib/code-server
+      #   /usr/local/opt/code-server/bin/code-server: /usr/bin/code-server
       # code_server_password used in code-server.service template
-      code_server_password: password
+      code_server_password: ${code_server_password}
       # code_server_domain used in code-server.conf template
       code_server_domain: code-${droplet_ip}.nip.io

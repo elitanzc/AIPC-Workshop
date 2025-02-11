@@ -33,6 +33,7 @@ resource "local_file" "inventories_yaml" {
     content = templatefile("../inventory.yaml.tftpl", {
       private_key_filepath = var.private_key_filepath
       droplet_ip = digitalocean_droplet.server.ipv4_address
+      code_server_password = var.code_server_password
     })
     file_permission = "0444"
 }

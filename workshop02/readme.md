@@ -3,6 +3,7 @@
         - `DO_token`
         - `private_key_filepath`
         - `DO_public_key_name`
+        - `code_server_password`
     - Provision the server and create `inventory.yaml` from `inventory.yaml.tftpl` template by running
         ```
         terraform init
