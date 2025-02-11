@@ -1,0 +1,35 @@
+Install Code-Server
+  Download code server https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz
+
+  Unpack it to the directory /usr/local/opt/code-server
+
+  Symbolic link /usr/local/opt/code-server to /usr/lib/code-server
+    ln -s /usr/local/opt/code-server /usr/lib/code-server
+
+  Symbolic link /usr/local/opt/code-server/bin/code-server to /usr/bin/code-server
+
+  Create directory /var/lib/code-server
+
+  Create a service file code-server.service in /lib/systemd/system/code-server.service
+    Update the __PASSWORD__
+
+  Start code-server service
+    systemctl daemon-reload
+    systemc enable code-server
+    systemc start code-server
+
+Expose code-server as code-<droplet ip>.nip.io
+  Install nginx
+
+  Update nginx configuration
+    Create config file in /etc/nginx/sites-available/code-server.conf
+      Update server_name to code-<droplet ip>.nip.io
+
+    Symbolic link code-server.conf to /etc/nginx/sites-enabled/code-server.conf
+
+  Start nginx
+    systemctl daemon-reload
+    systemc enable nginx
+    systemc start nginx
+
+Test your code-server on code-<droplet ip>.nip.io

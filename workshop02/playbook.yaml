@@ -1,0 +1,74 @@
+- name: Install Code-Server
+  hosts: all
+  tasks:
+    - name: Create dirs
+      file:
+        path: "{{ item}}"
+        state: directory
+      loop: "{{ dirs_to_create }}" # var (list) defined in inventory.yaml
+    - name: Check if code server is already downloaded
+      stat:
+        path: /tmp/code-server-4.96.4-linux-amd64
+      register: response
+    - name: Download code-server to /tmp
+      unarchive:
+        src: https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz
+        dest: /tmp
+        remote_src: yes
+      when: not response.stat.exists
+    - name: Copy downloaded code-server to /usr/local/opt/code-server
+      copy:
+        src: /tmp/code-server-4.96.4-linux-amd64/
+        dest: /usr/local/opt/code-server
+        remote_src: yes
+    - name: Create symlinks (code-server)
+      file:
+        src: "{{ item.key }}"
+        dest: "{{ item.value }}"
+        state: link
+      loop: "{{ symlinks_to_create | dict2items}}" # var (dict) defined in inventory.yaml
+    - name: Create a service file
+      template:
+        src: code-server.service.j2 # the template which uses global vars inventory.yaml
+        dest: /lib/systemd/system/code-server.service # write to file in server
+    - name: Start code-server service
+      systemd:
+        name: code-server
+        daemon_reload: true
+        enabled: true
+        state: started
+# - name: Install Nginx
+#   hosts: all
+#   tasks:
+    - name: Remove apt lock file
+      file:
+        state: absent
+        path: "{{ item }}"
+      loop:
+        - /var/lib/dpkg/lock-frontend
+        - /var/lib/dpkg/lock
+        - /var/lib/dpkg/lock*
+        - /var/cache/apt/archives/lock
+        - /var/lib/apt/lists/lock
+      become: true
+      tags: apt
+    - name: Install nginx
+      apt:
+        update_cache: yes
+        name: nginx
+        state: present
+    - name: Update nginx configuration
+      template:
+        src: code-server.conf.j2 # the template which uses global vars inventory.yaml
+        dest: /etc/nginx/sites-available/code-server.conf # write to file in server
+    - name: Create symlinks (nginx)
+      file:
+        src: /etc/nginx/sites-available/code-server.conf
+        dest: /etc/nginx/sites-enabled/code-server.conf
+        state: link
+    - name: Start nginx
+      systemd:
+        name: nginx
+        daemon_reload: true
+        enabled: true
+        state: restarted
