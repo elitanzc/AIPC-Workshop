@@ -37,9 +37,9 @@
         daemon_reload: true
         enabled: true
         state: started
-# - name: Install Nginx
-#   hosts: all
-#   tasks:
+- name: Install Nginx
+  hosts: all
+  tasks:
     - name: Remove apt lock file
       file:
         state: absent
