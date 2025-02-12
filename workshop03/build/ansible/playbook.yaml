@@ -1,0 +1,59 @@
+- name: Install Nginx # install nginx first else always getting "Unable to acquire dpkg lock" err
+  hosts: all
+  tasks:
+    - name: Install nginx
+      apt:
+        update_cache: yes
+        name: nginx
+        state: present
+      become: true
+    - name: Update nginx configuration
+      copy:
+        src: code-server.conf
+        dest: /etc/nginx/sites-available/code-server.conf # write to file in server
+    - name: Create symlinks (nginx)
+      file:
+        src: /etc/nginx/sites-available/code-server.conf
+        dest: /etc/nginx/sites-enabled/code-server.conf
+        state: link
+    - name: Start nginx
+      systemd:
+        name: nginx
+        daemon_reload: true
+        enabled: true
+        state: restarted
+- name: Install Code-Server
+  hosts: all
+  tasks:
+    - name: Create dirs
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop: "{{ dirs_to_create }}"
+    - name: Download code-server to opt_dir
+      unarchive:
+        src: "{{ code_server_archive }}"
+        dest: "{{ opt_dir }}"
+        remote_src: yes
+        list_files: yes
+      register: response # get the unzipped folder name from response.files[0]
+    - name: Create symlinks (code-server)
+      file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+      loop:
+        - src: "{{ opt_dir }}/{{ response.files[0] }}"
+          dest: /usr/lib/code-server
+        - src: "{{ opt_dir }}/{{ response.files[0] }}bin/code-server"
+          dest: /usr/bin/code-server
+    - name: Create a service file
+      copy:
+        src: code-server.service
+        dest: /lib/systemd/system/code-server.service # write to file in server
+    - name: Start code-server service
+      systemd:
+        name: code-server
+        daemon_reload: true
+        enabled: true
+        state: restarted

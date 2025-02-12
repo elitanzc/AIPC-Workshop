@@ -1,0 +1,26 @@
+# trying to pass ansible vars through code instead of command
+# https://stackoverflow.com/questions/58824210/packer-ansible-host-limited-variables
+
+opt_dir: /usr/local/opt/
+
+dirs_to_create:
+  - "{{ opt_dir }}"
+  - /var/lib/code-server
+
+code_server_archive: "https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz"
+
+# all:
+#   vars:
+#     ansible_user: root
+#     ansible_connection: ssh
+#     ansible_ssh_private_key_file: ${private_key_filepath}
+#   hosts:
+#     workshop02-server:
+#       ansible_host: ${droplet_ip}
+#       opt_dir: /usr/local/opt/
+#       dirs_to_create:
+#         - "{{ opt_dir }}"
+#         - /var/lib/code-server
+#       code_server_password: ${code_server_password}
+#       # code_server_domain used in code-server.conf template
+#       code_server_domain: code-${droplet_ip}.nip.io

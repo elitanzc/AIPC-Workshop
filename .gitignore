@@ -1,3 +1,4 @@
 *.nip.io
 *root@*
 */inventory.yaml
+*.pkrvars.hcl
